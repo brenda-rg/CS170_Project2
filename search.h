@@ -8,7 +8,7 @@ class searchTree {
     public:
     Node* ForwardSelect(Node* bestNode);
     Node* BackwardElim();
-    Node* Traverse(vector<int>);
+    Node* Traverse(Node*);
 };
 
 #endif
