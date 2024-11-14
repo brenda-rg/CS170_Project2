@@ -7,7 +7,16 @@
 using namespace std;
 
 Node* searchTree::ForwardSelect(Node* bestNode) {
-
+    Node* best = bestNode;
+    best->greedyBest = bestNode;
+    Node* childBest = Traverse(bestNode->characteristics);
+    //check if we have the best node so far
+    if(bestNode->accuracy < childBest->accuracy) {
+       best = childBest;
+       bestNode->greedyBest = childBest;
+    }
+    //expand best until no more in vector but keep the best in mind
+    return ForwardSelect(childBest);
 }
 
 Node* searchTree::Traverse(vector<int> travHold) {
