@@ -15,6 +15,9 @@ Node* searchTree::ForwardSelect(Node* bestNode) {
        best = childBest;
        bestNode->greedyBest = childBest;
     }
+    // if (childBest == nullptr || childBest -> accuracy < childbest-> accuracy){
+    //     return bestNode;
+    // }
     //expand best until no more in vector but keep the best in mind
     return ForwardSelect(childBest);
 }
