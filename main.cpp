@@ -13,6 +13,14 @@ main() {
         init.push_back(i+1);
     }
 
+    cout << "{" ;
+
+    for(int i = 0; i < init.size(); i++) {
+        cout << init.at(i) << "," ;
+    }
+
+    cout << "}" << endl;;
+
   /*   cout << "Type the number of the algorithm you want to run." << endl
         << "1. Forward Selection" << endl
         << "2. Backward Elimination" << endl
@@ -20,9 +28,10 @@ main() {
     cin >> opt; */
     Node* start = new Node(init);
     searchTree* search;
-    cout << "Using no features and “random” evaluation, I get an accuracy of " << start->accuracy << "%" << endl;
-    Node* best = search->ForwardSelect(start);
+    cout << "Using no features and \"random\" evaluation, I get an accuracy of " << start->accuracy << "%" << endl;
     cout << "Beginning search" << endl << endl;
+    Node* best = search->ForwardSelect(start);
+    cout << "Finished Search!" << endl;
 
     //cout <<  best->accuracy;
 

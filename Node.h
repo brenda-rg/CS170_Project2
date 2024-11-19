@@ -16,6 +16,9 @@ struct Node {
     vector<int> characteristics;
     vector<int> results;
     Node* greedyBest = nullptr;
+    void printChar();
+    void printResult();
+    double getAcc();
 
 };
 
