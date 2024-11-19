@@ -11,8 +11,33 @@ Node::Node() {
 };
 
 Node::Node(vector<int> data) {
-    accuracy = rand() % 100 + 1;
+    accuracy = (rand() % 1000 + 1)/10.0;
     characteristics = data;
 };
 
+void Node::printChar() {
+    if(characteristics.size() >= 1) {
+    cout << "{";
+    for(int i = 0; i < characteristics.size(); i++) {
+        cout << characteristics.at(i);
+        if(i < characteristics.size()-1) { cout << ",";}
+    }
+    cout << "}";
+    }
+};
+
+void Node::printResult() {
+    if(results.size() >= 1) {
+    cout << "{";
+    for(int i = 0; i < results.size(); i++) {
+        cout << results.at(i);
+        if(i < results.size()-1) { cout << ",";}
+    }
+    cout << "}";
+    }
+};
+
+double Node::getAcc() {
+    return accuracy;
+}
 #endif
