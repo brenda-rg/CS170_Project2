@@ -6,16 +6,30 @@
 #include <vector>
 using namespace std;
 
+//fix so that it returns right away instead of keep on searching;
 Node* searchTree::ForwardSelect(Node* curr) {
     Node* best = new Node(curr);
     Node* childBest = Traverse(curr); //get best child of current node
-    if(childBest == nullptr) return best->greedyBest; //if no children then return overall best
+    cout << "Feature set ";
+    childBest->printResult();
+    cout << " was best, accuracy is " << best->getAcc() << "%" << endl << endl;
+    if(childBest == nullptr || childBest->accuracy < curr->accuracy) {
+        if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
+        return best->greedyBest; //if no children then return overall best
+    }
+    //clean up code below
     if(best->greedyBest->accuracy < childBest->accuracy) {
        best->greedyBest = childBest;
     }
     curr->greedyBest = best->greedyBest;
     childBest->greedyBest = best->greedyBest;
     return ForwardSelect(childBest);
+}
+
+Node* searchTree::BackwardElim(Node* curr) {
+    //write function
+    cout << "---------------STUB---------------\n\n";
+    return curr;
 }
 
 Node* searchTree::Traverse(Node* curr) {
@@ -38,7 +52,7 @@ Node* searchTree::Traverse(Node* curr) {
 
     //compare all of the children until the best accuracy is found
     for (int k = 0; k < children.size(); k++) {
-        cout << "Using feature(s) ";
+        cout << "\tUsing feature(s) ";
         children.at(k)->printResult();
         cout << " accuracy is " << children.at(k)->getAcc() << "%" << endl;
 
@@ -46,14 +60,7 @@ Node* searchTree::Traverse(Node* curr) {
             best = children.at(k);
         }
     }
-    if(best->accuracy >= best->greedyBest->accuracy) {
-        cout << "feature set ";
-        best->printResult();
-        cout << " was best, accuracy is " << best->getAcc() << "%" << endl;
-    }
-    else {
-        cout << endl << endl << "(Warning, Accuracy has decreased!)" << endl;
-    }
+    cout << endl;
     //return the best child
     return best;
 }

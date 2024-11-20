@@ -6,8 +6,8 @@ using namespace std;
 
 class searchTree {
     public:
-    Node* ForwardSelect(Node* bestNode);
-    Node* BackwardElim();
+    Node* ForwardSelect(Node*);
+    Node* BackwardElim(Node*);
     Node* Traverse(Node*);
 };
 
