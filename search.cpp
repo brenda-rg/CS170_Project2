@@ -17,12 +17,7 @@ Node* searchTree::ForwardSelect(Node* curr) {
         if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
         return best->greedyBest; //if no children then return overall best
     }
-    //clean up code below
-    if(best->greedyBest->accuracy < childBest->accuracy) {
-       best->greedyBest = childBest;
-    }
-    curr->greedyBest = best->greedyBest;
-    childBest->greedyBest = best->greedyBest;
+    childBest->greedyBest = childBest;
     return ForwardSelect(childBest);
 }
 
