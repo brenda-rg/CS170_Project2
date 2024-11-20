@@ -4,6 +4,7 @@
 using namespace std;
 
 main() {
+    srand(time(0));
     int opt;
     vector<int> init;
     cout << "Please enter total number of features: \t";
@@ -22,7 +23,13 @@ main() {
     Node* start = new Node(init);
     start->greedyBest = start;
     searchTree* search;
-    cout << "Using no features and \"random\" evaluation, I get an accuracy of " << start->accuracy << "%" << endl << endl;
+    cout << "Using ";
+    if(opt != 1) {
+        cout << "features ";
+        start->results = init;
+    }
+    start->printResult();
+    cout << " and \"random\" evaluation, I get an accuracy of " << start->accuracy << "%" << endl << endl;
     cout << "Beginning search" << endl << endl;
     Node* best = nullptr;
     if(opt == 1) {

@@ -6,17 +6,15 @@
 #include <vector>
 using namespace std;
 
-//fix so that it returns right away instead of keep on searching;
 Node* searchTree::ForwardSelect(Node* curr) {
-    Node* best = new Node(curr);
     Node* childBest = Traverse(curr); //get best child of current node
-    cout << "Feature set ";
-    childBest->printResult();
-    cout << " was best, accuracy is " << best->getAcc() << "%" << endl << endl;
     if(childBest == nullptr || childBest->accuracy < curr->accuracy) {
         if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
-        return best->greedyBest; //if no children then return overall best
+        return curr; //if no children then return overall best
     }
+    cout << "Feature set ";
+    childBest->printResult();
+    cout << " was best, accuracy is " << childBest->getAcc() << "%" << endl << endl;
     childBest->greedyBest = childBest;
     return ForwardSelect(childBest);
 }

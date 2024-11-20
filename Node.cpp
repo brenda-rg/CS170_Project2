@@ -14,8 +14,6 @@ Node::Node(vector<int> data) {
     accuracy = eval();
     characteristics = data;
     greedyBest = nullptr;
-    /* printChar();
-    cout << endl << "accuracy: " << accuracy << endl; */
 };
 
 Node::Node(Node* curr) {
@@ -34,6 +32,9 @@ void Node::printChar() {
     }
     cout << "}";
     }
+    else {
+        cout << "no features";
+    }
 };
 
 void Node::printResult() {
@@ -45,6 +46,9 @@ void Node::printResult() {
     }
     cout << "}";
     }
+    else {
+        cout << "no features";
+    }
 };
 
 double Node::getAcc() {
@@ -52,7 +56,6 @@ double Node::getAcc() {
 }
 
 double Node::eval() {
-    //srand(time());
     return (rand() % 1000 + 1)/10.0; 
     //need to replace this in part 2 with actual eval() logic
 }
