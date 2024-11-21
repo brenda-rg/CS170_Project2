@@ -7,7 +7,7 @@ using namespace std;
 class searchTree {
     public:
     Node* ForwardSelect(Node* bestNode);
-    Node* BackwardElim();
+    Node* BackwardElim(Node* bestNode);
     Node* Traverse(Node*);
 };
 

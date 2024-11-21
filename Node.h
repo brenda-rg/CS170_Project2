@@ -10,6 +10,7 @@ using namespace std;
 struct Node {
     Node();
     Node(vector<int>);
+    Node(Node*);
     double accuracy;
     Node* head = nullptr;
 

@@ -13,6 +13,16 @@ Node::Node() {
 Node::Node(vector<int> data) {
     accuracy = (rand() % 1000 + 1)/10.0;
     characteristics = data;
+    greedyBest = nullptr;
+    printChar();
+    cout << endl << "accuracy: " << accuracy << endl;
+};
+
+Node::Node(Node* curr) {
+    accuracy = curr->accuracy;
+    characteristics = curr->characteristics;
+    results = curr->results;
+    greedyBest = curr->greedyBest;
 };
 
 void Node::printChar() {
