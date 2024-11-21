@@ -33,7 +33,7 @@ Node* searchTree::BackwardElim(Node* curr) {
     }
     Node* bestChild = children.front();
     for (Node* child : children) {
-        cout << "\tUsing Feautres";
+        cout << "\tUsing Features";
         child->printResult();
         cout << " accuracy is " << child->accuracy << "%" << endl;
 
