@@ -7,14 +7,15 @@
 using namespace std;
 
 Node* searchTree::ForwardSelect(Node* curr) {
-    Node* best = new Node(curr);
     Node* childBest = Traverse(curr); //get best child of current node
-    if(childBest == nullptr) return best->greedyBest; //if no children then return overall best
-    if(best->greedyBest->accuracy < childBest->accuracy) {
-       best->greedyBest = childBest;
+    if(childBest == nullptr || childBest->accuracy < curr->accuracy) {
+        if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
+        return curr; //if no children then return overall best
     }
-    curr->greedyBest = best->greedyBest;
-    childBest->greedyBest = best->greedyBest;
+    cout << "Feature set ";
+    childBest->printResult();
+    cout << " was best, accuracy is " << childBest->getAcc() << "%" << endl << endl;
+    childBest->greedyBest = childBest;
     return ForwardSelect(childBest);
 }
 
@@ -82,7 +83,7 @@ Node* searchTree::Traverse(Node* curr) {
 
     //compare all of the children until the best accuracy is found
     for (int k = 0; k < children.size(); k++) {
-        cout << "Using feature(s) ";
+        cout << "\tUsing feature(s) ";
         children.at(k)->printResult();
         cout << " accuracy is " << children.at(k)->getAcc() << "%" << endl;
 
@@ -90,14 +91,7 @@ Node* searchTree::Traverse(Node* curr) {
             best = children.at(k);
         }
     }
-    if(best->accuracy >= best->greedyBest->accuracy) {
-        cout << "feature set ";
-        best->printResult();
-        cout << " was best, accuracy is " << best->getAcc() << "%" << endl;
-    }
-    else {
-        cout << endl << endl << "(Warning, Accuracy has decreased!)" << endl;
-    }
+    cout << endl;
     //return the best child
     return best;
 }
