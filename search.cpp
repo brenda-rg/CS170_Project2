@@ -20,48 +20,39 @@ Node* searchTree::ForwardSelect(Node* curr) {
 }
 
 Node* searchTree::BackwardElim(Node* curr) {
-    Node* best = new Node(curr);
     vector<Node*> children;
 
-    if (curr->characteristics.size() == 0) return best->greedyBest;
-
     // Generate all children by removing one feature at a time
-    for (int i = 0; i < curr->characteristics.size(); i++) {
-        vector<int> copyTrav = curr->characteristics;
+    for (int i = 0; i < curr->results.size(); i++) {
+        vector<int> copyTrav = curr->results;
         copyTrav.erase(copyTrav.begin() + i);
         Node* newNode = new Node(copyTrav);
-        newNode->results = curr->results;
-        newNode->results.push_back(curr->characteristics.at(i));
+        newNode->results = copyTrav;
         newNode->greedyBest = curr->greedyBest;
         children.push_back(newNode);
     }
-
-   //best child 
     Node* bestChild = children.front();
     for (Node* child : children) {
-        cout << "Removing feature(s) ";
+        cout << "\tUsing Feautres";
         child->printResult();
-        cout << " accuracy is " << child->getAcc() << "%" << endl;
+        cout << " accuracy is " << child->accuracy << "%" << endl;
 
         if (bestChild->accuracy < child->accuracy) {
             bestChild = child;
         }
     }
-
-    if (bestChild->accuracy >= best->greedyBest->accuracy) {
-        cout << "Feature set ";
-        bestChild->printResult();
-        cout << " was best, accuracy is " << bestChild->getAcc() << "%" << endl;
-    } else {
+     if(bestChild == nullptr || curr->accuracy > bestChild->accuracy) {
         cout << endl << "(Warning, Accuracy has decreased!)" << endl;
-    }
+        return curr; //if no children then return overall best
+     }
 
-    best->greedyBest = bestChild->greedyBest;
-    curr->greedyBest = best->greedyBest;
+    cout << "Feature set ";
+    bestChild -> printResult();
+    cout << " was the best accuracy is " << bestChild->getAcc() << "%" << endl;
+    bestChild-> greedyBest = bestChild;
 
-    return BackwardElim(bestChild); // call recursion 
-}
-
+    return BackwardElim(bestChild); 
+     }
 
 Node* searchTree::Traverse(Node* curr) {
     Node* newNode = nullptr;
