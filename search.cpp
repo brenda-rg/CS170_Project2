@@ -1,6 +1,7 @@
 #ifndef SEARCH_CPP_
 #define SEARCH_CPP_
 
+#include "instance.h"
 #include "search.h"
 #include <math.h>
 #include <vector>
@@ -52,7 +53,7 @@ Node* searchTree::BackwardElim(Node* curr) {
     bestChild-> greedyBest = bestChild;
 
     return BackwardElim(bestChild); 
-     }
+    }
 
 Node* searchTree::Traverse(Node* curr) {
     Node* newNode = nullptr;
@@ -85,6 +86,32 @@ Node* searchTree::Traverse(Node* curr) {
     cout << endl;
     //return the best child
     return best;
+}
+
+float searchTree::NN(vector<float> dataset, vector<int> featSub) {
+
+}
+
+
+float searchTree::Euclidean(vector<float> feature) { 
+
+    instance vecInst;
+
+    vector<float> Inst = vecInst.getVector();
+    float x = 0;
+
+    for (int i =0; i < feature.size(); i++) {
+        float x = feature.at(i) + Inst.at(i);
+    }
+
+    float dist = pow(x,2);
+    dist = sqrt(dist);
+    return dist;
+}
+
+//X = (X – mean(X))/std(x)
+float searchTree::normalize(vector<float>) {
+
 }
 
 #endif
