@@ -9,6 +9,11 @@ class searchTree {
     Node* ForwardSelect(Node*);
     Node* BackwardElim(Node*);
     Node* Traverse(Node*);
+
+    float NN(vector<float>, vector<int>);
+    float Euclidean(vector<float>);
+    float normalize(vector<float>);
+    int accuracy = 0;
 };
 
 #endif
