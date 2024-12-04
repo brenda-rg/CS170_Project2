@@ -6,7 +6,7 @@
 using namespace std;
 
 Instance::Instance() {
-    features = {1,2,3};
+   // features = {1,2,3};
 };
 Instance::Instance(int n) {
     classtype = n;

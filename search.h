@@ -11,7 +11,7 @@ class searchTree {
     Node* Traverse(Node*);
 
     double NN(vector<double>, vector<int>);
-    double Euclidean(vector<double>);
+    double Euclidean(vector<double> featSub, Instance train, Instance test);
     double normalize(vector<double>);
     int accuracy = 0;
 };

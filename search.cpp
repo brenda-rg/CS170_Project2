@@ -93,25 +93,23 @@ double searchTree::NN(vector<double> dataset, vector<int> featSub) { //featSub i
 }
 
 
-double searchTree::Euclidean(vector<double> feature) { 
+double searchTree::Euclidean(vector<double> featSub, Instance train, Instance test) { 
+    // 2 instances train and test 
+    //vector of indexes for feature we want to use 
+    vector<double> train_vec = train.getVector(); 
+    vector<double> test_vec = test.getVector();
+    double result = 0;
 
-    Instance vecInst;
-
-    vector<double> Inst = vecInst.getVector();
-    double x = 0;
-
-    for (int i =0; i < feature.size(); i++) {
-        double x = feature.at(i) + Inst.at(i);
+    for (int i = 0; i < featSub.size(); i++) {
+        int featureIn = featSub[i] - 1;  // index 0 of feature we want to use 
+        double diff = train_vec[featureIn] - test_vec[featureIn];
+     
+     result += pow(diff,2);   
     }
 
-    double dist = pow(x,2);
-    dist = sqrt(dist);
-    return dist;
+    return sqrt(result);
 }
 
-//X = (X – mean(X))/std(x)
-double searchTree::normalize(vector<double>) {
 
-}
 
 #endif
