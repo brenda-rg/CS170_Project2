@@ -1,7 +1,7 @@
 #ifndef SEARCH_CPP_
 #define SEARCH_CPP_
 
-#include "instance.h"
+#include "Instance.h"
 #include "search.h"
 #include <math.h>
 #include <vector>
@@ -88,29 +88,29 @@ Node* searchTree::Traverse(Node* curr) {
     return best;
 }
 
-float searchTree::NN(vector<float> dataset, vector<int> featSub) {
+double searchTree::NN(vector<double> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
 
 }
 
 
-float searchTree::Euclidean(vector<float> feature) { 
+double searchTree::Euclidean(vector<double> feature) { 
 
-    instance vecInst;
+    Instance vecInst;
 
-    vector<float> Inst = vecInst.getVector();
-    float x = 0;
+    vector<double> Inst = vecInst.getVector();
+    double x = 0;
 
     for (int i =0; i < feature.size(); i++) {
-        float x = feature.at(i) + Inst.at(i);
+        double x = feature.at(i) + Inst.at(i);
     }
 
-    float dist = pow(x,2);
+    double dist = pow(x,2);
     dist = sqrt(dist);
     return dist;
 }
 
 //X = (X – mean(X))/std(x)
-float searchTree::normalize(vector<float>) {
+double searchTree::normalize(vector<double>) {
 
 }
 

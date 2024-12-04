@@ -1,15 +1,26 @@
 #ifndef INSTANCE_CPP_
 #define INSTANCE_CPP_
 
-#include "instance.h"
+#include "Instance.h"
+#include <iostream>
 using namespace std;
 
-instance::instance() {
-    currInstance = {1,2,3};
+Instance::Instance() {
+    features = {1,2,3};
+};
+Instance::Instance(int n) {
+    classtype = n;
 };
 
-vector<float> instance::getVector() {
-    return currInstance;
+vector<double> Instance::getVector() {
+    return features;
+}
+
+void Instance::print() {
+    cout << "ID:" << id << "\tclass:" << classtype << endl << "\t\tfeatures:\t";
+    for (int i=0; i < features.size(); ++i) {
+        cout << features.at(i) << "  ";
+    }
 }
 
 

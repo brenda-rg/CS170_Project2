@@ -6,10 +6,15 @@
 using namespace std;
 
 
-class instance {
+class Instance {
     public:
-    vector<float> currInstance;
-    vector<float> getVector();
+    Instance();
+    Instance(int); //Instance with class known
+    Instance(int, vector<double>); // Instance with class and features known
+    int id, classtype;
+    vector<double> features;
+    vector<double> getVector();
+    void print();
 
 };
 
