@@ -88,30 +88,46 @@ Node* searchTree::Traverse(Node* curr) {
     return best;
 }
 
-double searchTree::NN(vector<double> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
+double searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
+    int sz = dataset.size(); //number of total instances
+    Instance nn; //used to keep track of the nearest neighbor
+    Instance test;
+    double dist = INT_MAX;
+    double newDist;
+    double acc = 0;
+    int correct =0;
 
+    for(int i = 0; i < sz; ++i) { //test instance
+        for(int j = 0; j < sz; ++i) { //train instance
+            if(i == j) continue; //if test and train the same do nothing
+            newDist = Euclidean(featSub, dataset.at(j), dataset.at(i)); //get the distance between train and test
+            if(dist < newDist) { //check if the instance is closer to 
+                nn = dataset.at(j); //change nn
+                dist = newDist; //change closest dist value
+            }
+        }//done going through instance -> found nn -->now classify
+        test = i;
+        test.classtype = nn.classtype; //set class to the class of the nearest neighbor (prediction)
+        if(test.classtype == dataset.at(i).classtype) {
+            correct +=1;
+        } //add to correct counter if prediciton == actual
+    } //loop until done going through all instances
+    //calculate accuracy
+    acc = correct/sz; //accuracy = #instances predicted correct/#total instances
+    return acc;
 }
 
 
-double searchTree::Euclidean(vector<double> feature) { 
+double searchTree::Euclidean(Instance test, Instance train, vector<int> features) { 
+    double dist = 0;
+    /* for (int i =0; i < features.size(); i++) {
+        int index = features.at(i);
 
-    Instance vecInst;
-
-    vector<double> Inst = vecInst.getVector();
-    double x = 0;
-
-    for (int i =0; i < feature.size(); i++) {
-        double x = feature.at(i) + Inst.at(i);
     }
 
     double dist = pow(x,2);
-    dist = sqrt(dist);
+    dist = sqrt(dist); */
     return dist;
-}
-
-//X = (X – mean(X))/std(x)
-double searchTree::normalize(vector<double>) {
-
 }
 
 #endif
