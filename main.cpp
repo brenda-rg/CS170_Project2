@@ -10,11 +10,22 @@ vector<Instance> parse(string);
 void normalize(vector<Instance>&);
 
 main() {
+    int opt;
     string filename;
-    cout << "Please enter the data file you want to use." << endl;
-    cin >> filename;
+    vector<Instance> dataset;
+    cout << "Please enter the data file you want to use:" << endl
+    << "\t1.small-test-dataset.txt" << endl
+    << "\t2.large-test-dataset.txt" << endl;
+    cin >> opt;
 
-    vector<Instance> dataset = parse("small-test-dataset.txt"); //fix this to filename after
+    if(opt == 1) {
+        dataset = parse("small-test-dataset.txt"); 
+    }
+    else {
+        dataset = parse("large-test-dataset.txt");
+    }
+
+    
     /* cout << "Now printing dataset..." << endl << endl << endl;
     for(int i = 0; i < dataset.size(); i++) {
         dataset.at(i).print();
@@ -22,6 +33,37 @@ main() {
     } */
 
     normalize(dataset);
+    int featsz = dataset.front().features.size();
+
+    searchTree search;
+    vector<int> featIndex;
+
+    cout << "What features do you want to use?" << endl
+    << "\t1.All features" << endl
+    << "\t2.I want speacific features" << endl;
+    cin >> opt;
+
+    if(opt == 1) { //if pick using all features
+        for(int i = 0; i < featsz; ++i) {
+            featIndex.push_back(i+1);
+        }
+        //cout << featIndex.back() << endl;
+    }
+
+    else {
+        cout << "This dataset has " << dataset.front().features.size() << " features" << endl
+        << "Please enter the features you want to use seperated by spaces: (ex: 1 4 5)" << endl;
+        while(cin >> opt) {
+            featIndex.push_back(opt);
+            if (cin.peek() == '\n') {
+                break;
+            }
+        }
+
+    }
+
+    search.NN(dataset,featIndex);
+
     /* cout << "Now printing normalized dataset..." << endl << endl << endl;
     for(int i = 0; i < dataset.size(); i++) {
         dataset.at(i).print();
@@ -30,7 +72,7 @@ main() {
 
    //can comment out below for now
 
-    int opt;
+    /* 
     vector<int> init;
     cout << "Please enter total number of features: \t";
     cin >> opt;
@@ -67,7 +109,7 @@ main() {
     cout << "Finished Search!! "
     << "The best feature subset is ";
     best->greedyBest->printResult();
-    cout << ", which has an accuracy of " <<  best->greedyBest->accuracy << "%" << endl;
+    cout << ", which has an accuracy of " <<  best->greedyBest->accuracy << "%" << endl; */
 
     return 0;
 }
@@ -94,7 +136,7 @@ vector<Instance> parse(string filename) {
         row >> classtype; //get first double in string == class
         //cout << "Class: " << classtype << endl;  // Debug output for class
         n.classtype = classtype;
-        n.id = dataset.size(); //add id
+        n.id = dataset.size() + 1; //add id
         while(row >> temp) { //get rest of doubles == features
             features.push_back(temp);
         }

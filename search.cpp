@@ -88,46 +88,61 @@ Node* searchTree::Traverse(Node* curr) {
     return best;
 }
 
-double searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
+void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
     int sz = dataset.size(); //number of total instances
-    Instance nn; //used to keep track of the nearest neighbor
-    Instance test;
-    double dist = INT_MAX;
+    int nn = 0; //used to keep track of the nearest neighbor
+    double dist;
     double newDist;
-    double acc = 0;
     int correct =0;
 
     for(int i = 0; i < sz; ++i) { //test instance
-        for(int j = 0; j < sz; ++i) { //train instance
+        dist = INT_MAX;
+        for(int j = 0; j < sz; ++j) { //train instance
             if(i == j) continue; //if test and train the same do nothing
             newDist = Euclidean(featSub, dataset.at(j), dataset.at(i)); //get the distance between train and test
-            if(dist < newDist) { //check if the instance is closer to 
-                nn = dataset.at(j); //change nn
+            if(newDist < dist) { //check if the instance is closer to 
+                nn = j; //change nn
                 dist = newDist; //change closest dist value
+                //cout << "changed NN" << endl;
             }
+
         }//done going through instance -> found nn -->now classify
-        test = i;
-        test.classtype = nn.classtype; //set class to the class of the nearest neighbor (prediction)
-        if(test.classtype == dataset.at(i).classtype) {
+        //test = i;
+        cout << "Test ID[" << dataset.at(i).id << "]" 
+        << "  ||  Nearest Neighbot ID[" << dataset.at(nn).id << "]" 
+        << "  ||  Predicted Class[" << dataset.at(nn).classtype << "]" 
+        << "  ||  Actual Class[" << dataset.at(i).classtype << "]";
+        //test.classtype = nn.classtype; //set class to the class of the nearest neighbor (prediction)
+        if(dataset.at(nn).classtype == dataset.at(i).classtype) {
             correct +=1;
+            cout << "  ||  Correct";
         } //add to correct counter if prediciton == actual
+        else cout << "  ||  Incorrect";
+        cout << endl;
     } //loop until done going through all instances
     //calculate accuracy
-    acc = correct/sz; //accuracy = #instances predicted correct/#total instances
-    return acc;
+    cout << "Total Correct[" << correct << "]" << "out of [" << sz << "] Total Instances" << endl;
+    accuracy = (correct/(sz*1.0))*100; //accuracy = #instances predicted correct/#total instances
+    cout << "The NN classifier using all [" << featSub.size() << "] features has a " << accuracy << "%" << " accuracy" << endl;
 }
 
 
-double searchTree::Euclidean(Instance test, Instance train, vector<int> features) { 
-    double dist = 0;
-    /* for (int i =0; i < features.size(); i++) {
-        int index = features.at(i);
-
+double searchTree::Euclidean(vector<int> featSub, Instance train, Instance test) { 
+    // 2 instances train and test 
+    //vector of indexes for feature we want to use 
+    vector<double> train_vec = train.getVector(); 
+    vector<double> test_vec = test.getVector();
+    double result = 0;
+    for (int i = 0; i < featSub.size(); i++) {
+        int featureIn = featSub[i] - 1;  // index 0 of feature we want to use 
+        double diff = train_vec[featureIn] - test_vec[featureIn];
+     
+     result += pow(diff,2);   
     }
 
-    double dist = pow(x,2);
-    dist = sqrt(dist); */
-    return dist;
+    return sqrt(result);
 }
+
+
 
 #endif

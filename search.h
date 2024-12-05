@@ -10,10 +10,10 @@ class searchTree {
     Node* BackwardElim(Node*);
     Node* Traverse(Node*);
 
-    double NN(vector<Instance>, vector<int>);
-    double Euclidean(vector<int>, Instance, Instance);
+    void NN(vector<Instance>, vector<int>);
+    double Euclidean(vector<int> featSub, Instance train, Instance test);
     double normalize(vector<double>);
-    int accuracy = 0;
+    double accuracy = 0;
 };
 
 #endif
