@@ -112,7 +112,7 @@ Node* searchTree::Traverse(Node* curr) {
 }
 
 void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub is the features we are currently using; can be v= {1,3,4} for example
-    auto time_starts = chrono::high_resolution_clock::now(); 
+    auto start_time = chrono::high_resolution_clock::now(); 
     
     int sz = dataset.size(); //number of total instances
     int nn = 0; //used to keep track of the nearest neighbor
@@ -121,6 +121,7 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
     int correct =0;
 
     for(int i = 0; i < sz; ++i) { //test instance
+    auto time_starts = chrono::high_resolution_clock::now(); 
         dist = INT_MAX;
         for(int j = 0; j < sz; ++j) { //train instance
             if(i == j) continue; //if test and train the same do nothing
@@ -131,7 +132,11 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
                 //cout << "changed NN" << endl;
             }
 
-        }//done going through instance -> found nn -->now classify
+        }
+        auto time_stops = chrono::high_resolution_clock::now(); // Stop timer
+        auto Period = chrono::duration_cast<chrono::milliseconds>(time_stops - time_starts);
+        cout << "Runtime: " << Period.count() << " millisec" << endl;
+        //done going through instance -> found nn -->now classify
         //test = i;
         cout << "Test ID[" << dataset.at(i).id << "]" 
         << "  ||  Nearest Neighbot ID[" << dataset.at(nn).id << "]" 
@@ -150,10 +155,10 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
     accuracy = (correct/(sz*1.0))*100; //accuracy = #instances predicted correct/#total instances
     cout << "The NN classifier using all [" << featSub.size() << "] features has a " << accuracy << "%" << " accuracy" << endl;
     
-    auto time_stops = chrono::high_resolution_clock::now(); // Stop timer
-    auto Period = chrono::duration_cast<chrono::milliseconds>(time_stops - time_starts);
+     auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
+     auto Period1 = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
     
-    cout << "Time for code to run: " << Period.count() << " millisec" << endl;
+     cout << "Total runtime: " << Period1.count() << " millisec" << endl;
 }
 
 
