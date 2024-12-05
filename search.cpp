@@ -151,7 +151,7 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
         cout << endl;
     } //loop until done going through all instances
     //calculate accuracy
-    cout << "Total Correct[" << correct << "]" << "out of [" << sz << "] Total Instances" << endl;
+    cout << "Total Correct[" << correct << "]" << " out of [" << sz << "] Total Instances" << endl;
     accuracy = (correct/(sz*1.0))*100; //accuracy = #instances predicted correct/#total instances
     cout << "The NN classifier using all [" << featSub.size() << "] features has a " << accuracy << "%" << " accuracy" << endl;
     
