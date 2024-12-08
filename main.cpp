@@ -2,12 +2,15 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <chrono>
 #include "Instance.cpp"
 #include "search.cpp"
 using namespace std;
 
 vector<Instance> parse(string);
 void normalize(vector<Instance>&);
+chrono::milliseconds parse_time;
+chrono::milliseconds norm_time;
 
 main() {
     int opt;
@@ -33,24 +36,22 @@ main() {
     } */
 
     normalize(dataset);
+
     int featsz = dataset.front().features.size();
 
     searchTree search;
     vector<int> featIndex;
 
-    cout << "What features do you want to use?" << endl
+    /* cout << "What features do you want to use?" << endl
     << "\t1.All features" << endl
-    << "\t2.I want speacific features" << endl;
-    cin >> opt;
+    << "\t2.I want specific features" << endl;
+    cin >> opt; */
 
-    if(opt == 1) { //if pick using all features
-        for(int i = 0; i < featsz; ++i) {
-            featIndex.push_back(i+1);
-        }
-        //cout << featIndex.back() << endl;
+    for(int i = 0; i < featsz; ++i) {
+        featIndex.push_back(i+1);
     }
 
-    else {
+    /* else {
         cout << "This dataset has " << dataset.front().features.size() << " features" << endl
         << "Please enter the features you want to use seperated by spaces: (ex: 1 4 5)" << endl;
         while(cin >> opt) {
@@ -60,9 +61,10 @@ main() {
             }
         }
 
-    }
+    } */
 
     search.NN(dataset,featIndex);
+
 
     /* cout << "Now printing normalized dataset..." << endl << endl << endl;
     for(int i = 0; i < dataset.size(); i++) {
@@ -72,49 +74,57 @@ main() {
 
    //can comment out below for now
 
-    /* 
+    
     vector<int> init;
-    cout << "Please enter total number of features: \t";
+   /*  cout << "Please enter total number of features: \t";
     cin >> opt;
 
     for(int i = 0; i < opt; i++) {
         init.push_back(i+1);
     }
-    cout << endl << endl;
+    cout << endl << endl; */
 
     cout << "Type the number of the algorithm you want to run." << endl << endl
         << "\t1. Forward Selection" << endl
         << "\t2. Backward Elimination" << endl << endl << "\t\t\t\t\t";
     cin >> opt;
     cout << endl;
-    Node* start = new Node(init);
+    Node* start = new Node();
     start->greedyBest = start;
-    searchTree* search;
+
+    //searchTree* search;
     cout << "Using ";
-    if(opt != 1) {
+   if(opt != 1) {
         cout << "features ";
-        start->results = init;
+        start->results = featIndex;
+        start->accuracy = search.accuracy;
     }
+    else start->characteristics = featIndex;
     start->printResult();
+    cout << ": " << endl;
     cout << " and \"random\" evaluation, I get an accuracy of " << start->accuracy << "%" << endl << endl;
     cout << "Beginning search" << endl << endl;
     Node* best = nullptr;
     if(opt == 1) {
-        best = search->ForwardSelect(start);
+        best = search.ForwardSelect(start,dataset);
     }
     else {
-        best = search->BackwardElim(start);
+        best = search.BackwardElim(start,dataset);
     }
-    
+
     cout << "Finished Search!! "
     << "The best feature subset is ";
     best->greedyBest->printResult();
-    cout << ", which has an accuracy of " <<  best->greedyBest->accuracy << "%" << endl; */
-
+    cout << ", which has an accuracy of " <<  best->greedyBest->accuracy << "%" << endl;
+    cout << "Parsing runtime: " << parse_time.count() << " millisec" << endl;
+    cout << "Normalizing runtime: " << norm_time.count() << " millisec" << endl;
+    cout << "Classifier runtime: " << search.classifier_time.count() << " millisec" << endl;
+    cout << "Search runtime: " << search.search_time.count() << " millisec" << endl;
     return 0;
 }
 
 vector<Instance> parse(string filename) {
+    auto start_time = chrono::high_resolution_clock::now(); 
     vector<Instance> dataset;
     //open the file
     ifstream f;
@@ -134,7 +144,7 @@ vector<Instance> parse(string filename) {
         double temp;
         istringstream row(s); //now parse string of row
         row >> classtype; //get first double in string == class
-        //cout << "Class: " << classtype << endl;  // Debug output for class
+        cout << "Class: " << classtype << endl;  // Debug output for class
         n.classtype = classtype;
         n.id = dataset.size() + 1; //add id
         while(row >> temp) { //get rest of doubles == features
@@ -154,11 +164,15 @@ vector<Instance> parse(string filename) {
         cout << endl << endl; */
         dataset.push_back(n); //add to dataset
     }
+    auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
+    parse_time = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
     return dataset;
 }
 
 
 void normalize(vector<Instance>& dataset) { //method people mentioned in discord (ie x_n = x-min/max-min)
+    auto start_time = chrono::high_resolution_clock::now(); 
+
     int instance_sz = dataset.size(); //number of instances
     int feature_sz = dataset.at(0).features.size(); // number of features
     double min =  dataset.at(0).features.front(); //use to find min of each feature
@@ -189,5 +203,7 @@ void normalize(vector<Instance>& dataset) { //method people mentioned in discord
         //cout << "INDEX:" << i << "\t MIN[" << min_index << "]:" << min << "\t MAX[" << max_index << "]:" <<  max << endl << endl; //Debug min/max values
         //sum = 0;
     } //done checking min/max of all features
+    auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
+    norm_time = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
 }
 

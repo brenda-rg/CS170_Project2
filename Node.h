@@ -20,7 +20,6 @@ struct Node {
     void printChar();
     void printResult();
     double getAcc();
-    double eval();
 
 };
 

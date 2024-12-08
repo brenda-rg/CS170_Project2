@@ -8,10 +8,10 @@ using namespace std;
 
 Node::Node() {
     accuracy = 0;
+    greedyBest = nullptr;
 };
 
 Node::Node(vector<int> data) {
-    accuracy = eval();
     characteristics = data;
     greedyBest = nullptr;
 };
@@ -55,8 +55,4 @@ double Node::getAcc() {
     return accuracy;
 }
 
-double Node::eval() {
-    return (rand() % 1000 + 1)/10.0; 
-    //need to replace this in part 2 with actual eval() logic
-}
 #endif
