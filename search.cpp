@@ -8,7 +8,7 @@
 #include <chrono>
 using namespace std;
 
-Node* searchTree::ForwardSelect(Node* curr) {
+Node* searchTree::ForwardSelect(Node* curr, vector<Instance> dataset) {
     static bool First = true;
     static auto Time_begin = chrono::high_resolution_clock::now();
     
@@ -16,23 +16,38 @@ Node* searchTree::ForwardSelect(Node* curr) {
         Time_begin = chrono::high_resolution_clock::now();
         First = false;
     }
-    
-    Node* childBest = Traverse(curr); //get best child of current node
-    if(childBest == nullptr || childBest->accuracy < curr->accuracy) {
-        if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
-        return curr; //if no children then return overall best
-    }
+
+     Node* best = new Node(curr);
+    Node* childBest = Traverse(curr, dataset); //get best child of current node
+    if(childBest == nullptr) return curr; //if no children then return overall best
     cout << "Feature set ";
     childBest->printResult();
     cout << " was best, accuracy is " << childBest->getAcc() << "%" << endl << endl;
-    childBest->greedyBest = childBest;
+    if(best->greedyBest->accuracy < childBest->accuracy) {
+       best->greedyBest = childBest;
+    }
+    curr->greedyBest = best->greedyBest;
+    childBest->greedyBest = best->greedyBest;
     auto Time_ends = chrono::high_resolution_clock::now();
-    auto Period = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begin);
-    cout << "Total search time: " << Period.count() << " milliseconds" << endl;
-    return ForwardSelect(childBest);
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begin);
+    return ForwardSelect(childBest, dataset); 
+    
+    // Node* childBest = Traverse(curr, dataset); //get best child of current node
+    // if(childBest == nullptr || childBest->accuracy < curr->accuracy) {
+    //     if(childBest->accuracy < curr->accuracy) cout <<  "(Warning, Accuracy has decreased!)" << endl;
+    //     return curr; //if no children then return overall best
+    // }
+    // cout << "Feature set ";
+    // childBest->printResult();
+    // cout << " was best, accuracy is " << childBest->getAcc() << "%" << endl << endl;
+    // childBest->greedyBest = childBest;
+    // auto Time_ends = chrono::high_resolution_clock::now();
+    // search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begin);
+    // //cout << "Total search time: " << search_time.count() << " milliseconds" << endl;
+    // return ForwardSelect(childBest, dataset);
 }
 
-Node* searchTree::BackwardElim(Node* curr) {
+Node* searchTree::BackwardElim(Node* curr, vector<Instance> dataset) {
     static bool First = true;
     static auto Time_begins = chrono::high_resolution_clock::now();
     
@@ -42,7 +57,9 @@ Node* searchTree::BackwardElim(Node* curr) {
     }
     
     vector<Node*> children;
-
+    if(curr->results.size() == 0) {
+        return curr;
+    }
     // Generate all children by removing one feature at a time
     for (int i = 0; i < curr->results.size(); i++) {
         vector<int> copyTrav = curr->results;
@@ -52,8 +69,12 @@ Node* searchTree::BackwardElim(Node* curr) {
         newNode->greedyBest = curr->greedyBest;
         children.push_back(newNode);
     }
+
     Node* bestChild = children.front();
+    if(children.size() == 0) bestChild = nullptr;
     for (Node* child : children) {
+        NN(dataset, child->results);
+        child->accuracy = accuracy;
         cout << "\tUsing Features";
         child->printResult();
         cout << " accuracy is " << child->accuracy << "%" << endl;
@@ -62,23 +83,41 @@ Node* searchTree::BackwardElim(Node* curr) {
             bestChild = child;
         }
     }
-     if(bestChild == nullptr || curr->accuracy > bestChild->accuracy) {
-        cout << endl << "(Warning, Accuracy has decreased!)" << endl;
-        return curr; //if no children then return overall best
-     }
 
-    cout << "Feature set ";
-    bestChild -> printResult();
-    cout << " was the best accuracy is " << bestChild->getAcc() << "%" << endl;
-    bestChild-> greedyBest = bestChild;
+    
+    Node* best = new Node(curr);
+    if(bestChild == nullptr) return curr; //if no children then return overall best
 
+  
+    cout << "\n\nFeature set ";
+    bestChild->printResult();
+    cout << " was best, accuracy is " << bestChild->getAcc() << "%" << endl << endl;
+    if(best->greedyBest->accuracy < bestChild->accuracy) {
+       best->greedyBest = bestChild;
+    }
+    curr->greedyBest = best->greedyBest;
+    bestChild->greedyBest = best->greedyBest;
     auto Time_ends = chrono::high_resolution_clock::now();
-    auto Period = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins);
-    cout << "Total search time: " << Period.count() << " milliseconds" << endl;
-    return BackwardElim(bestChild); 
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins);
+    return BackwardElim(bestChild, dataset); 
+
+    //  if(bestChild == nullptr || bestChild->accuracy < curr->accuracy) {
+    //     cout << endl << "(Warning, Accuracy has decreased!)" << endl;
+    //     return curr; //if no children then return overall best
+    //  }
+
+    // cout << "Feature set ";
+    // bestChild -> printResult();
+    // cout << " was the best accuracy is " << bestChild->getAcc() << "%" << endl;
+    // bestChild-> greedyBest = bestChild;
+
+    /* auto Time_ends = chrono::high_resolution_clock::now();
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins); */
+    // //cout << "Total search time: " << search_time.count() << " milliseconds" << endl;
+    // return BackwardElim(bestChild, dataset); 
     }
 
-Node* searchTree::Traverse(Node* curr) {
+Node* searchTree::Traverse(Node* curr, vector<Instance> dataset) {
     Node* newNode = nullptr;
     vector<Node*> children;
     if(curr->characteristics.size() == 0) return nullptr;
@@ -98,6 +137,8 @@ Node* searchTree::Traverse(Node* curr) {
 
     //compare all of the children until the best accuracy is found
     for (int k = 0; k < children.size(); k++) {
+        NN(dataset, children.at(k)->results);
+        children.at(k)->accuracy = accuracy;
         cout << "\tUsing feature(s) ";
         children.at(k)->printResult();
         cout << " accuracy is " << children.at(k)->getAcc() << "%" << endl;
@@ -129,55 +170,32 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
             if(newDist < dist) { //check if the instance is closer to 
                 nn = j; //change nn
                 dist = newDist; //change closest dist value
-                //cout << "changed NN" << endl;
+                
             }
 
         }
-        auto time_stops = chrono::high_resolution_clock::now(); // Stop timer
-        auto Period = chrono::duration_cast<chrono::milliseconds>(time_stops - time_starts);
-        cout << "Runtime: " << Period.count() << " millisec" << endl;
-        //done going through instance -> found nn -->now classify
-        //test = i;
-        cout << "Test ID[" << dataset.at(i).id << "]" 
-        << "  ||  Nearest Neighbot ID[" << dataset.at(nn).id << "]" 
-        << "  ||  Predicted Class[" << dataset.at(nn).classtype << "]" 
-        << "  ||  Actual Class[" << dataset.at(i).classtype << "]";
-        //test.classtype = nn.classtype; //set class to the class of the nearest neighbor (prediction)
         if(dataset.at(nn).classtype == dataset.at(i).classtype) {
             correct +=1;
-            cout << "  ||  Correct";
-        } //add to correct counter if prediciton == actual
-        else cout << "  ||  Incorrect";
-        cout << endl;
-    } //loop until done going through all instances
-    //calculate accuracy
-    cout << "Total Correct[" << correct << "]" << " out of [" << sz << "] Total Instances" << endl;
-    accuracy = (correct/(sz*1.0))*100; //accuracy = #instances predicted correct/#total instances
-    cout << "The NN classifier using all [" << featSub.size() << "] features has a " << accuracy << "%" << " accuracy" << endl;
-    
+            
+        } 
+    } 
+    accuracy = (correct/(sz*1.0))*100;    
      auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
-     auto Period1 = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
-    
-     cout << "Total runtime: " << Period1.count() << " millisec" << endl;
+     classifier_time = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
 }
 
 
 double searchTree::Euclidean(vector<int> featSub, Instance train, Instance test) { 
     // 2 instances train and test 
     //vector of indexes for feature we want to use 
-    vector<double> train_vec = train.getVector(); 
+    vector<double> train_vec = train.getVector();
     vector<double> test_vec = test.getVector();
     double result = 0;
     for (int i = 0; i < featSub.size(); i++) {
         int featureIn = featSub[i] - 1;  // index 0 of feature we want to use 
         double diff = train_vec[featureIn] - test_vec[featureIn];
-     
-     result += pow(diff,2);   
+        result += pow(diff,2);   
     }
-
     return sqrt(result);
 }
-
-
-
 #endif
