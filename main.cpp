@@ -16,8 +16,9 @@ main() {
     int opt;
     string filename;
     vector<Instance> dataset;
-    cout << "Please enter the data file you want to use:" << endl
-    << "\t1.small-test-dataset.txt" << endl
+    cout << "Please enter the data file you want to use:" << endl;
+    cin >> filename;
+    /* << "\t1.small-test-dataset.txt" << endl
     << "\t2.large-test-dataset.txt" << endl;
     cin >> opt;
 
@@ -26,8 +27,8 @@ main() {
     }
     else {
         dataset = parse("large-test-dataset.txt");
-    }
-
+    } */
+   dataset = parse(filename);
     
     /* cout << "Now printing dataset..." << endl << endl << endl;
     for(int i = 0; i < dataset.size(); i++) {
@@ -144,7 +145,7 @@ vector<Instance> parse(string filename) {
         double temp;
         istringstream row(s); //now parse string of row
         row >> classtype; //get first double in string == class
-        cout << "Class: " << classtype << endl;  // Debug output for class
+        //cout << "Class: " << classtype << endl;  // Debug output for class
         n.classtype = classtype;
         n.id = dataset.size() + 1; //add id
         while(row >> temp) { //get rest of doubles == features
@@ -154,11 +155,11 @@ vector<Instance> parse(string filename) {
         cout << "Saved As:" << endl;
         for(int i = 0; i < features.size(); ++i) { //Debug features vector
             cout << features.at(i) << " ";
-        }
-        cout << endl;
+        } */
+        /* cout << endl;
         cout << "ID: " << n.id << endl; */
         n.features = features; //add features
-       /*  for(int i = 0; i < n.features.size(); ++i) { //Debug features vector
+        /* for(int i = 0; i < n.features.size(); ++i) { //Debug features vector
             cout << n.features.at(i) << " ";
         }
         cout << endl << endl; */
