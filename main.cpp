@@ -18,23 +18,8 @@ main() {
     vector<Instance> dataset;
     cout << "Please enter the data file you want to use:" << endl;
     cin >> filename;
-    /* << "\t1.small-test-dataset.txt" << endl
-    << "\t2.large-test-dataset.txt" << endl;
-    cin >> opt;
-
-    if(opt == 1) {
-        dataset = parse("small-test-dataset.txt"); 
-    }
-    else {
-        dataset = parse("large-test-dataset.txt");
-    } */
    dataset = parse(filename);
     
-    /* cout << "Now printing dataset..." << endl << endl << endl;
-    for(int i = 0; i < dataset.size(); i++) {
-        dataset.at(i).print();
-        cout << endl;
-    } */
 
     normalize(dataset);
 
@@ -43,47 +28,14 @@ main() {
     searchTree search;
     vector<int> featIndex;
 
-    /* cout << "What features do you want to use?" << endl
-    << "\t1.All features" << endl
-    << "\t2.I want specific features" << endl;
-    cin >> opt; */
-
     for(int i = 0; i < featsz; ++i) {
         featIndex.push_back(i+1);
     }
 
-    /* else {
-        cout << "This dataset has " << dataset.front().features.size() << " features" << endl
-        << "Please enter the features you want to use seperated by spaces: (ex: 1 4 5)" << endl;
-        while(cin >> opt) {
-            featIndex.push_back(opt);
-            if (cin.peek() == '\n') {
-                break;
-            }
-        }
-
-    } */
 
     search.NN(dataset,featIndex);
-
-
-    /* cout << "Now printing normalized dataset..." << endl << endl << endl;
-    for(int i = 0; i < dataset.size(); i++) {
-        dataset.at(i).print();
-        cout << endl;
-    } */
-
-   //can comment out below for now
-
     
     vector<int> init;
-   /*  cout << "Please enter total number of features: \t";
-    cin >> opt;
-
-    for(int i = 0; i < opt; i++) {
-        init.push_back(i+1);
-    }
-    cout << endl << endl; */
 
     cout << "Type the number of the algorithm you want to run." << endl << endl
         << "\t1. Forward Selection" << endl
@@ -103,7 +55,7 @@ main() {
     else start->characteristics = featIndex;
     start->printResult();
     cout << ": " << endl;
-    cout << " and \"random\" evaluation, I get an accuracy of " << start->accuracy << "%" << endl << endl;
+    cout << " and leave one out evaluation, I get an accuracy of " << start->accuracy << "%" << endl << endl;
     cout << "Beginning search" << endl << endl;
     Node* best = nullptr;
     if(opt == 1) {
@@ -151,18 +103,7 @@ vector<Instance> parse(string filename) {
         while(row >> temp) { //get rest of doubles == features
             features.push_back(temp);
         }
-        /* cout << endl;
-        cout << "Saved As:" << endl;
-        for(int i = 0; i < features.size(); ++i) { //Debug features vector
-            cout << features.at(i) << " ";
-        } */
-        /* cout << endl;
-        cout << "ID: " << n.id << endl; */
         n.features = features; //add features
-        /* for(int i = 0; i < n.features.size(); ++i) { //Debug features vector
-            cout << n.features.at(i) << " ";
-        }
-        cout << endl << endl; */
         dataset.push_back(n); //add to dataset
     }
     auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
@@ -195,14 +136,13 @@ void normalize(vector<Instance>& dataset) { //method people mentioned in discord
                 max = dataset.at(j).features.at(i);
                 max_index = j;
             }
-            //sum += dataset.at(j).features.at(i);
+            
         } //done checking column of features
 
         for(int j = 0; j < instance_sz; ++j) {
             dataset.at(j).features.at(i) = (dataset.at(j).features.at(i)-min)/(max-min);
         }//loop through again and normalize data;
-        //cout << "INDEX:" << i << "\t MIN[" << min_index << "]:" << min << "\t MAX[" << max_index << "]:" <<  max << endl << endl; //Debug min/max values
-        //sum = 0;
+       
     } //done checking min/max of all features
     auto time_stops1 = chrono::high_resolution_clock::now(); // Stop timer
     norm_time = chrono::duration_cast<chrono::milliseconds>(time_stops1 - start_time);
