@@ -28,6 +28,8 @@ Node* searchTree::ForwardSelect(Node* curr, vector<Instance> dataset) {
     }
     curr->greedyBest = best->greedyBest;
     childBest->greedyBest = best->greedyBest;
+    auto Time_ends = chrono::high_resolution_clock::now();
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begin);
     return ForwardSelect(childBest, dataset); 
     
     // Node* childBest = Traverse(curr, dataset); //get best child of current node
@@ -95,6 +97,8 @@ Node* searchTree::BackwardElim(Node* curr, vector<Instance> dataset) {
     }
     curr->greedyBest = best->greedyBest;
     bestChild->greedyBest = best->greedyBest;
+    auto Time_ends = chrono::high_resolution_clock::now();
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins);
     return BackwardElim(bestChild, dataset); 
 
     //  if(bestChild == nullptr || bestChild->accuracy < curr->accuracy) {
@@ -107,8 +111,8 @@ Node* searchTree::BackwardElim(Node* curr, vector<Instance> dataset) {
     // cout << " was the best accuracy is " << bestChild->getAcc() << "%" << endl;
     // bestChild-> greedyBest = bestChild;
 
-    // auto Time_ends = chrono::high_resolution_clock::now();
-    // search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins);
+    /* auto Time_ends = chrono::high_resolution_clock::now();
+    search_time = chrono::duration_cast<chrono::milliseconds>(Time_ends - Time_begins); */
     // //cout << "Total search time: " << search_time.count() << " milliseconds" << endl;
     // return BackwardElim(bestChild, dataset); 
     }
@@ -184,19 +188,14 @@ void searchTree::NN(vector<Instance> dataset, vector<int> featSub) { //featSub i
 double searchTree::Euclidean(vector<int> featSub, Instance train, Instance test) { 
     // 2 instances train and test 
     //vector of indexes for feature we want to use 
-    vector<double> train_vec = train.getVector(); 
+    vector<double> train_vec = train.getVector();
     vector<double> test_vec = test.getVector();
     double result = 0;
     for (int i = 0; i < featSub.size(); i++) {
         int featureIn = featSub[i] - 1;  // index 0 of feature we want to use 
         double diff = train_vec[featureIn] - test_vec[featureIn];
-     
-     result += pow(diff,2);   
+        result += pow(diff,2);   
     }
-
     return sqrt(result);
 }
-
-
-
 #endif
